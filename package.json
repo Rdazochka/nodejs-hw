@@ -2,6 +2,7 @@
   "name": "nodejs-hw",
   "version": "1.0.0",
   "description": "",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -30,6 +31,8 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "http-errors": "^2.0.1",
+    "mongoose": "^9.9.5",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0"
   }
