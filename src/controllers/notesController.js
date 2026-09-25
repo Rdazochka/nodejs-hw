@@ -7,30 +7,34 @@ export const getAllNotes = async (req, res) => {
   const pageNumber = Number(page);
   const perPageNumber = Number(perPage);
 
-  console.log(tag, search);
-
-  const myQuery = Note.find();
+  const filter = {};
 
   if (tag) {
-    myQuery.where({ tag });
+    filter.tag = tag;
   }
 
   if (search) {
-    myQuery.where({
-      $or: [
-        { title: { $regex: search, $options: 'i' } },
-        { content: { $regex: search, $options: 'i' } },
-      ],
-    });
+    filter.$or = [
+      { title: { $regex: search, $options: 'i' } },
+      { content: { $regex: search, $options: 'i' } },
+    ];
   }
 
-  const totalNotes = await Note.countDocuments(myQuery.getFilter());
+  const notesQuery = Note.find({
+    userId: req.user._id,
+    ...filter,
+  })
+    .skip((pageNumber - 1) * perPageNumber)
+    .limit(perPageNumber);
+
+  const totalNotesQuery = Note.countDocuments({
+    userId: req.user._id,
+    ...filter,
+  });
+
+  const [notes, totalNotes] = await Promise.all([notesQuery, totalNotesQuery]);
 
   const totalPages = Math.ceil(totalNotes / perPageNumber);
-
-  myQuery.skip((pageNumber - 1) * perPageNumber).limit(perPageNumber);
-
-  const notes = await myQuery;
 
   res.status(200).json({
     page: pageNumber,
@@ -43,7 +47,10 @@ export const getAllNotes = async (req, res) => {
 
 export const getNoteById = async (req, res) => {
   const { noteId } = req.params;
-  const note = await Note.findById(noteId);
+  const note = await Note.findOne({
+    _id: noteId,
+    userId: req.user._id,
+  });
 
   if (!note) {
     throw createHttpError(404, 'Note not found');
@@ -52,7 +59,10 @@ export const getNoteById = async (req, res) => {
 };
 
 export const createNote = async (req, res) => {
-  const note = await Note.create(req.body);
+  const note = await Note.create({
+    ...req.body,
+    userId: req.user._id,
+  });
   res.status(201).json(note);
 };
 
@@ -60,6 +70,7 @@ export const deleteNote = async (req, res) => {
   const { noteId } = req.params;
   const note = await Note.findOneAndDelete({
     _id: noteId,
+    userId: req.user._id,
   });
 
   if (!note) {
@@ -73,7 +84,7 @@ export const updateNote = async (req, res) => {
   const { noteId } = req.params;
 
   const note = await Note.findOneAndUpdate(
-    { _id: noteId }, // Шукаємо по id
+    { _id: noteId, userId: req.user._id }, // Шукаємо по id
     req.body,
     { returnDocument: 'after' }, // повертаємо оновлений документ
   );
