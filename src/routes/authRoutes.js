@@ -1,5 +1,5 @@
 import { Router } from 'express';
-// import { celebrate } from 'celebrate';
+
 import {
   registerUser,
   loginUser,
