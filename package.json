@@ -30,12 +30,17 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "celebrate": "^16.0.0",
+    "cloudinary": "^2.11.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "handlebars": "^4.7.10",
     "http-errors": "^2.0.1",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.9.5",
+    "multer": "^2.4.0",
+    "nodemailer": "^10.0.15",
     "pino": "^10.3.1",
     "pino-http": "^11.0.0"
   }
