@@ -9,7 +9,7 @@ import { errorHandler } from './middleware/errorHandler.js';
 import { connectMongoDB } from './db/connectMongoDB.js';
 import cookieParser from 'cookie-parser';
 import notesRoutes from './routes/notesRoutes.js';
-import authRouters from './routes/authRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 
 const app = express();
@@ -20,14 +20,13 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(logger);
 
-app.use(authRouters);
+app.use(authRoutes);
 app.use(userRoutes);
-
 app.use(notesRoutes);
 
-app.use(errors());
-
 app.use(notFoundHandler);
+
+app.use(errors());
 
 app.use(errorHandler);
 
